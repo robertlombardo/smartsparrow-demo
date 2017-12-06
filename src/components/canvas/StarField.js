@@ -8,7 +8,7 @@ export default function() {
         this.update = ()=>{
           this.clear();
 
-          const stars = StarModelStore.getAll().stars;
+          const stars = [].concat( StarModelStore.getAll().stars ); // we want a shallow copy
           const cameraZPos = StarModelStore.getAll().cameraZPos;
           // console.log( 'cameraZPos: ', cameraZPos );
 
@@ -19,7 +19,7 @@ export default function() {
             var star = stars[ i ];
             // console.log( "star: ", star );
             var zRelative = star.z - cameraZPos;
-            if( zRelative<0 || zRelative>50 ) {
+            if( zRelative<0 || zRelative>10 ) {
                 // star is behind the camera or beyond view range
                 continue;
             }

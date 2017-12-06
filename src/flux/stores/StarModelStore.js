@@ -26,13 +26,17 @@ const starPool = new ObjectPool(
 var activeStars = [];
 var cameraZPos = 0;
 
+const TARGET_NUM_STARS = 1000;
+const VIEW_RANGE_XY = 10000;
+const VIEW_RANGE_Z = 10;
+
 // initialize some stars
-for( var i = 0; i < 10000; ++i ) {
+for( var i = 0; i < TARGET_NUM_STARS; ++i ) {
    activeStars.push( starPool.get({
-      x: -100000 + Math.random()*150000, // this._VIEW_RANGE_XY - Math.random() * this._VIEW_RANGE_XY * 2,
-      y: -100000 + Math.random()*150000, // this._VIEW_RANGE_XY - Math.random() * this._VIEW_RANGE_XY * 2,
-      z: -100 + Math.random()*200 // this._camera_Z + Math.random() * this._VIEW_RANGE_Z
-   }))
+      x: -VIEW_RANGE_XY + Math.random()*2*VIEW_RANGE_XY,
+      y: -VIEW_RANGE_XY + Math.random()*2*VIEW_RANGE_XY,
+      z: -VIEW_RANGE_Z + Math.random()*2*VIEW_RANGE_Z
+   }));
 } 
 
 const StarModelStore = Object.assign( {}, EventEmitter.prototype, {
@@ -45,7 +49,7 @@ const StarModelStore = Object.assign( {}, EventEmitter.prototype, {
 });
 export default StarModelStore;
 
-var cameraVelocity = 0.8;
+var cameraVelocity = -0.8;
 /*function setCameraVelocity( action ) {
    cameraVelocity = action.newVelocity;
 }*/
@@ -73,6 +77,27 @@ const update = ()=>{
    lastUpdate = now;
 };
 update();
+
+// on a less frequent loop (for performance), add or remove stars
+setInterval( ()=>{
+   // remove stars out of range
+   for( var i = activeStars.length-1; i >= 0; --i ) {
+      if( Math.abs(cameraZPos-activeStars[i].z) > VIEW_RANGE_Z ) {
+         starPool.put( activeStars.splice(i,1)[0] );
+      }
+   }
+
+   const numStarsToAdd = TARGET_NUM_STARS - activeStars.length;
+
+   for( var j = 0; j < numStarsToAdd; ++j ) {
+      activeStars.push( starPool.get({
+         x: -VIEW_RANGE_XY + Math.random()*2*VIEW_RANGE_XY,
+         y: -VIEW_RANGE_XY + Math.random()*2*VIEW_RANGE_XY,
+         z: cameraVelocity>0? cameraZPos+VIEW_RANGE_Z:cameraZPos-VIEW_RANGE_Z 
+      }));
+   }
+}, 100 );
+
 
 /*package
 {
