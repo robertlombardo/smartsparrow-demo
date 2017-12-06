@@ -23,14 +23,14 @@ const starPool = new ObjectPool(
     0
 );
 
+const TARGET_NUM_STARS = 3000;
+const VIEW_RANGE_XY = 10000;
+
 // the stuff we serve:
 var activeStars = [];
 var cameraZPos = 0;
 var cameraVelocity = 50;
 const VIEW_RANGE_Z = 25;
-
-const TARGET_NUM_STARS = 3000;
-const VIEW_RANGE_XY = 10000;
 
 // initialize some stars
 for( var i = 0; i < TARGET_NUM_STARS; ++i ) {
@@ -43,7 +43,6 @@ for( var i = 0; i < TARGET_NUM_STARS; ++i ) {
 
 const StarModelStore = Object.assign( {}, EventEmitter.prototype, {
    CAMERA_VELOCITY_CHANGED: 'CAMERA_VELOCITY_CHANGED',
-
 
     getAll: function() {
       return {
@@ -87,7 +86,6 @@ const update = ()=>{
 
    newCameraZPos = cameraZPos + (cameraVelocity/100)/deltaTime;
    if( !isNaN(newCameraZPos) ) {
-      // console.log( 'cameraZPos: ', cameraZPos );
       cameraZPos = newCameraZPos;
    }
 
