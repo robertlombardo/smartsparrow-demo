@@ -105,6 +105,8 @@ class App extends Component {
       redOverlay.alpha = Math.max( 0, -camVelocity/200 );
       blueOverlay.alpha = Math.max( 0, camVelocity/200 );
 
+      mainStar.rotation += 0.001;
+
       PIXI.renderer.render( PIXI.stage );      
 
       if( !this.state.done ) {

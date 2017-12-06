@@ -6,9 +6,9 @@ const starPool = new ObjectPool(
     // create func
     ( position ) => {
         if( position ) {
-          return { x:position.x, y:position.y, z:position.z };
+          return { x:position.x, y:position.y, z:position.z, size:Math.floor(1+Math.random()*2.5) };
         } else {
-          return { x:0, y:0, z:0 };
+          return { x:0, y:0, z:0, size:Math.floor(1+Math.random()*2.5) };
         }
     },
 
@@ -27,10 +27,10 @@ const starPool = new ObjectPool(
 var activeStars = [];
 var cameraZPos = 0;
 var cameraVelocity = 50;
+const VIEW_RANGE_Z = 25;
 
-const TARGET_NUM_STARS = 1000;
+const TARGET_NUM_STARS = 3000;
 const VIEW_RANGE_XY = 10000;
-const VIEW_RANGE_Z = 10;
 
 // initialize some stars
 for( var i = 0; i < TARGET_NUM_STARS; ++i ) {
@@ -49,7 +49,8 @@ const StarModelStore = Object.assign( {}, EventEmitter.prototype, {
       return {
          stars: activeStars,
          cameraZPos,
-         cameraVelocity
+         cameraVelocity,
+         VIEW_RANGE_Z
       };
     }
 });

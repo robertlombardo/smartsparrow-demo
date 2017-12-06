@@ -10,16 +10,15 @@ export default function() {
 
           const stars = [].concat( StarModelStore.getAll().stars ); // we want a shallow copy
           const cameraZPos = StarModelStore.getAll().cameraZPos;
-          // console.log( 'cameraZPos: ', cameraZPos );
+          const VIEW_RANGE_Z = StarModelStore.getAll().VIEW_RANGE_Z;
 
           // console.log( stars );
 
-          this.beginFill( 0xffffff );
           for( var i = 0; i < stars.length; ++i ) {
             var star = stars[ i ];
             // console.log( "star: ", star );
             var zRelative = star.z - cameraZPos;
-            if( zRelative<0 || zRelative>10 ) {
+            if( zRelative<0 || zRelative>VIEW_RANGE_Z ) {
                 // star is behind the camera or beyond view range
                 continue;
             }
@@ -34,10 +33,11 @@ export default function() {
                 || screenYPos<0 || screenYPos>PIXI.stage._height ) {
                // do something?
             } else {
-               this.drawRect( screenXPos, screenYPos, 1, 1 );
+               this.beginFill( 0xffffff, Math.abs((VIEW_RANGE_Z-zRelative)/VIEW_RANGE_Z) );          
+               this.drawRect( screenXPos, screenYPos, star.size, star.size );
+               this.endFill();
             }
           }
-          this.endFill();
         };
 
         // StarModelStore.on( StarModelStore.NEW_CAMERA_POSITION, this.update );
