@@ -19,22 +19,28 @@ class VelocityControlPanel extends Component {
     });
   }
 
-  render() {    
+  render() { 
     return (
       <div className="velocity-control-panel">
-        <div className="velocity-display">Velocity: {this.state.velocity} km/s</div>
+        <div className="velocity-display">Velocity: {this.state.velocity.toFixed(2)} km/s</div>
         <Slider 
           className="velocity-slider" 
-          min={-100}
-          max={100}
-          defaultValue={this.state.velocity} 
+          min={0}
+          max={1}
+          step={0.001}
+          defaultValue={0.9} 
           onChange={this.onSliderChange.bind(this)}/>
       </div>
     );
   }
 
   onSliderChange( value ) {
-    AppActions.setCameraVelocity( value );
+    // slider value is from 0~1
+    // since the total velocity range (from -100 to 100) is 200, we want to convert our slider scale to 0~Math.sqrt(200)
+    value *= Math.sqrt( 200 );
+    var newVelocity = -100 + Math.pow(value,2);
+
+    AppActions.setCameraVelocity( newVelocity );
   }
 }
 export default VelocityControlPanel;

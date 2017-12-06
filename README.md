@@ -30,5 +30,3 @@ The page will reload if you make edits.<br>
 ## Can't Get It To Work?
 
 View a build at [http://wakefield-studios.com/smartsparrow-demo](http://wakefield-studios.com/smartsparrow-demo)
-
-https://github.com/robertlombardo/smartsparrow-demo

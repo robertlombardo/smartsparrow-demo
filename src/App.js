@@ -117,7 +117,6 @@ class App extends Component {
           requestAnimationFrame( updateCanvas );
       }            
     }
-    starField.update();
     updateCanvas();
   }
 
