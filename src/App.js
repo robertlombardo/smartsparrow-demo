@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Script from 'react-load-script';
+import VelocityControlPanel from 'components/DOM/VelocityControlPanel';
 import StarField from 'components/canvas/StarField';
 
 var PIXI;
@@ -18,6 +19,15 @@ class App extends Component {
     return (
       <div className="App">
         <div className="root-canvas" id="root-canvas"></div>
+        
+        <div className="ui-root">
+          <div className="ui-header"></div>
+          <div className="ui-body"></div>
+          <div className="ui-footer">
+            <VelocityControlPanel />
+          </div>
+        </div>
+
         <Script url="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"
                 onError={this.onPixiLoadError.bind(this)}
                 onLoad={this.onPixiLoaded.bind(this)}>
@@ -33,6 +43,7 @@ class App extends Component {
   onPixiLoaded() {      
     PIXI = window.PIXI;
 
+    // create renderer
     const RendererClass = PIXI.autoDetectRenderer;
     PIXI.renderer = new RendererClass( 
         window.innerWidth, 
@@ -49,11 +60,12 @@ class App extends Component {
     // insert PIXI canvas elements into the DOM.
     document.getElementById('root-canvas').appendChild( PIXI.renderer.view );
     
-    // root containers that will hold the scenes we draw.
+    // root container that will hold the scene we draw.
     PIXI.stage = new PIXI.Container();        
     PIXI.stage._width = window.innerWidth;
     PIXI.stage._height = window.innerHeight;
 
+    // load image assets
     const loader = new PIXI.loaders.Loader();
     loader.add( 'star', './assets/star-small.png' );
     loader.onError.add((err) => {console.log(err)});
@@ -61,9 +73,11 @@ class App extends Component {
   }
 
   onAssetsLoaded( loader, resources ) {
+    // star field backdrop
     const starField = new StarField();
     PIXI.stage.addChild( starField );
 
+    // main character star
     const mainStar = new PIXI.Sprite( resources.star.texture );
     mainStar.x = PIXI.stage._width / 2;
     mainStar.y = PIXI.stage._height / 2;
