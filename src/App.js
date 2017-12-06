@@ -3,6 +3,7 @@ import './App.css';
 import Script from 'react-load-script';
 import VelocityControlPanel from 'components/DOM/VelocityControlPanel';
 import StarField from 'components/canvas/StarField';
+import StarModelStore from 'flux/stores/StarModelStore';
 
 var PIXI;
 
@@ -79,6 +80,17 @@ class App extends Component {
 
     // main character star
     const mainStar = new PIXI.Sprite( resources.star.texture );
+    const redOverlay = new PIXI.Sprite( resources.star.texture );
+    const blueOverlay = new PIXI.Sprite( resources.star.texture );
+    redOverlay.anchor.x = 0.5;
+    redOverlay.anchor.y = 0.5;
+    blueOverlay.anchor.x = 0.5;
+    blueOverlay.anchor.y = 0.5;
+    redOverlay.tint = 0xff0000;
+    blueOverlay.tint = 0x0000ff;
+    mainStar.addChild( redOverlay );
+    mainStar.addChild( blueOverlay );
+
     mainStar.x = PIXI.stage._width / 2;
     mainStar.y = PIXI.stage._height / 2;
     mainStar.anchor.x = 0.5;
@@ -87,8 +99,11 @@ class App extends Component {
 
     // canvas rendering loop
     const updateCanvas = () => {
-      mainStar.rotation += 0.001;
       starField.update();
+
+      const camVelocity = StarModelStore.getAll().cameraVelocity;
+      redOverlay.alpha = Math.max( 0, -camVelocity/200 );
+      blueOverlay.alpha = Math.max( 0, camVelocity/200 );
 
       PIXI.renderer.render( PIXI.stage );      
 
