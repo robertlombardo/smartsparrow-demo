@@ -6,6 +6,7 @@ import StarField from 'components/canvas/StarField';
 import StarModelStore from 'flux/stores/StarModelStore';
 
 var PIXI;
+var mainStar;
 
 class App extends Component {
   constructor( props ) {
@@ -14,6 +15,9 @@ class App extends Component {
     this.state = {
       done: false
     };
+
+    window.addEventListener( "resize", this.handleResize );
+    window.addEventListener( "orientationchange", this.handleResize );
   }
 
   render() {
@@ -79,7 +83,7 @@ class App extends Component {
     PIXI.stage.addChild( starField );
 
     // main character star
-    const mainStar = new PIXI.Sprite( resources.star.texture );
+    mainStar = new PIXI.Sprite( resources.star.texture );
     const redOverlay = new PIXI.Sprite( resources.star.texture );
     const blueOverlay = new PIXI.Sprite( resources.star.texture );
     redOverlay.anchor.x = 0.5;
@@ -115,6 +119,15 @@ class App extends Component {
     }
     starField.update();
     updateCanvas();
+  }
+
+  handleResize() {
+    PIXI.stage._width = window.innerWidth;
+    PIXI.stage._height = window.innerHeight;
+    PIXI.renderer.resize( window.innerWidth, window.innerHeight );
+
+    mainStar.x = PIXI.stage._width / 2;
+    mainStar.y = PIXI.stage._height / 2;
   }
 }
 export default App;
