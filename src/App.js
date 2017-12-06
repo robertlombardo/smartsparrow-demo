@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Script from 'react-load-script';
+import StarField from 'components/canvas/StarField';
 
 var PIXI;
 
@@ -53,51 +54,35 @@ class App extends Component {
     PIXI.stage._width = window.innerWidth;
     PIXI.stage._height = window.innerHeight;
 
-    /*PIXI.loader.add([ 
-        'assets/star-small.png'
-    ]).load( this.onAssetsLoaded );*/
-
-    // PIXI.loader.add('star','../assets/star-small.png').load( this.onAssetsLoaded.bind(this) );
     const loader = new PIXI.loaders.Loader();
     loader.add( 'star', './assets/star-small.png' );
-    loader.onError.add((err) => {console.log(err)}); // called once per errored file
+    loader.onError.add((err) => {console.log(err)});
     loader.load( this.onAssetsLoaded.bind(this) );
   }
 
   onAssetsLoaded( loader, resources ) {
-    console.log( resources );
+    const starField = new StarField();
+    PIXI.stage.addChild( starField );
 
-    const star = new PIXI.Sprite( resources.star.texture );
-
-    // Setup the position of the star
-    star.x = PIXI.stage._width / 2;
-    star.y = PIXI.stage._height / 2;
-
-    // Rotate around the center
-    star.anchor.x = 0.5;
-    star.anchor.y = 0.5;
-
-    // Add the star to the scene we are building
-    PIXI.stage.addChild( star );
-
-    /*var effect = new PIXI.Graphics();
-    effect.beginFill( 0xff0000 );
-    effect.drawRect( -20.5, -50, 50, 100 );
-    effect.endFill();
-    effect.x = PIXI.stage._width/2;
-    effect.y = PIXI.stage._height/2;
-    PIXI.stage.addChild( effect );*/
+    const mainStar = new PIXI.Sprite( resources.star.texture );
+    mainStar.x = PIXI.stage._width / 2;
+    mainStar.y = PIXI.stage._height / 2;
+    mainStar.anchor.x = 0.5;
+    mainStar.anchor.y = 0.5;
+    PIXI.stage.addChild( mainStar );
 
     // canvas rendering loop
     const updateCanvas = () => {
-      PIXI.renderer.render( PIXI.stage );
+      mainStar.rotation += 0.001;
+      starField.update();
 
-      star.rotation += 0.001;
+      PIXI.renderer.render( PIXI.stage );      
 
       if( !this.state.done ) {
           requestAnimationFrame( updateCanvas );
       }            
     }
+    starField.update();
     updateCanvas();
   }
 }
